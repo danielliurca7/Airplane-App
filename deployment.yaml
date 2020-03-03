@@ -1,0 +1,59 @@
+version: '3.3'
+
+services:
+  mysql:
+    build:
+      context: .
+      dockerfile: ./database/Dockerfile
+    networks:
+      - admin
+      - airplane
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: flights
+
+  admin:
+    build:
+      context: .
+      dockerfile: ./admin_service/Dockerfile
+    depends_on:
+      - mysql
+    networks:
+      - admin
+    restart: always
+
+  airplane:
+    build:
+      context: .
+      dockerfile: ./airplane_service/Dockerfile
+    depends_on:
+      - mysql
+    networks:
+      - airplane
+    restart: always
+
+  client:
+    build:
+      context: .
+      dockerfile: ./client_service/Dockerfile
+    stdin_open: true
+    tty: true
+    depends_on:
+      - admin
+      - airplane
+    networks:
+      - admin
+      - airplane
+    restart: always
+
+
+volumes:
+  db_data: {}
+
+
+networks:
+  admin: {}
+  airplane: {}

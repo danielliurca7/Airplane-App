@@ -1,0 +1,76 @@
+# adding some flights
+add  1 Bucharest Sofia 8 150 1 10
+add  2 Sofia Athens 10 150 1 10
+add  3 Bucharest Athens 14 150 2 10
+add  4 Bucharest Istambul 20 151 2 10
+add  5 Bucharest Rome 14 152 2 10
+add  6 Bucharest Berlin 3 153 3 10
+add  7 Bucharest Moscow 14 153 3 10
+add  8 Bucharest Paris 17 153 4 10
+add  9 Bucharest Madrid 19 153 4 10
+add 10 Bucharest London 23 153 5 10
+add 11 "New York" "Los Angeles" 19 154 6 10
+add 12 London "New York" 7 154 10 10
+add 13 Moscow Tokyo 20 153 10 10
+add 14 Tokyo Sydney 7 155 10 10
+add 15 "Los Angeles" Tokyo 7 155 11 10
+add 16 "Los Angeles" Sydney 2 155 13 10
+
+# checking if route service works
+route Bucharest Berlin 2 153
+route Bucharest "Los Angeles" 3 153
+
+# trying to book or delete a flight that does not exists
+book 20
+cancel 20
+
+# trying to buy a ticket without a valid reservation
+buy 1 4650160561386442
+
+# checking rerouting if some flights are cancelled
+route Bucharest Athens 2 150
+cancel 3
+route Bucharest Athens 2 150
+route Bucharest Sydney 5 153
+cancel 13
+route Bucharest Sydney 5 153
+
+# trying to buy a ticket 2 times
+book 1
+buy 1 1721626382712938
+buy 1 1721626382712938
+
+# trying to book a cancelled ticket or buy a ticket with a cancelled flight on it
+book Bucharest Berlin 2 153
+cancel 6
+book 6
+buy 2 7080140714010107
+
+# trying to overbook a flight
+# last book will fail because there are already 10% more reservations then the capacity in the case of Bucharest to London flight
+book Bucharest London 2 153
+book Bucharest London 2 153
+book Bucharest London 2 153
+book Bucharest London 2 153
+book Bucharest London 2 153
+book Bucharest London 2 153
+book Bucharest London 2 153
+book Bucharest London 2 153
+book Bucharest London 2 153
+book Bucharest London 2 153
+book Bucharest London 2 153
+book Bucharest Sydney 5 153
+
+# trying to buy more tickets than are seats in the plane
+# if flight is overbooked last person will not be able to buy the ticket
+buy  3 1147017414936476
+buy  4 1271047104716182
+buy  5 6561836827171072
+buy  6 1846180729840917
+buy  7 6510610720646104
+buy  8 4915345892514782
+buy  9 1741807401770174
+buy 10 4164141501082737
+buy 11 5347291060156230
+buy 12 4016864701742239
+buy 13 4160462872017301
