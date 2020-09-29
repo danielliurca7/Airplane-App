@@ -1,44 +1,36 @@
-DETALII DE IMPLEMENTARE SI RULARE
-    Tema a fost implementata in Python, folosind bibliotecile flask si mysql.connector.
-    Pentru rulare se foloseste comanda "docker-compose -f deployment.yaml up -d". Aceasta va si construi imaginile si va rula toate serviciile.
-    
-SERVICIUL CLIENT
-    Pentru rularea clientului, se foloseste comanda "docker attach tema2_client_1". Aceasta ne va duce in scriptul interactiv al clientului.
-    Folositi comanda help pentru a a vedea comenzile posibile si q pentru a inchide terminalul.
-    L-am implementat asa pentru a va fi voua mai usor de testat.
-    Serviciul client pur si simplu face request-uri la celelalte servicii.
-    Comnzile sunt:
-        - add    -> pentru adaugarea unui zbor
-        - cancel -> pentru anularea unui zbor
-        - route  -> gaseste cea ma scurta ruta intre 2 orase
-        - book   -> rezerva bilet
-        - buy    -> cumpara bilet
-    Pentru mai multe detalii se poate folosi comanda help pentru a vedea toti parametrii acestor comenzi.
+# Airplane Ticket Booking
+Application for booking and buying airplane tickets.
 
-SERVICIUL ADMIN
-    Acest serviciu opereaza pe tabla Flights din baza de date si inserteaza sau sterge din aceasta tabela.
-    Serviciul ruleaza pe portul 6000.
+A flight will contain the following information:
+* ID (as a String)
+* source and destination (as Strings)
+* leaving hour (an Int between 0 and 23)
+* leaving day (an Int between 0 and 365) - we consider all the flights to be in the same year
+* duration (as an Int)
+* number of available tickets
 
-SERVICIUL AIRPLANE
-    Prin acest serviciu se poate vedea cea mai scurta ruta intre doua orase, se poate rezerva un bilet si se poate cumpara un bilet rezervat.
-    Serviciul ruleaza pe portul 9000.
-    Deoarece nu mi s-a raspuns timp de o saptamana pe forum am facut cum am crezut eu si am lasat un endpoint care iti intoarce o lista a zborurile intre 2 orase.
-    De asemenea rezervarea se poate face dupa id-urile zborurilor sau dupa zborurile necesare ajungerii dintr-un oras in altul(vezi parametrii comenzii book din client).
+# Services
 
-SERVICIUL MYSQL
-    Baza de date are 4 tabele:
-        - Flights -> contine toate detaliile despre zborurile
-        - Reservations -> contine id-urile rezervarilor
-        - FlightsToReservations -> pentru rezolvarea relatiei many-to-many intre zboruri si rezervarilor
-        - Tickets -> contine rezervarile care au fost achitate si numarul cardului
+## Airplane service
+This service is used for booking and buying tickets and has the following API:
+* finding the shortest route between two cities, that returns a list of flights
+* booking a ticket between two cities that returns a reservation id
+* buying a ticket using it's reservation id, that returns a boarding pass
 
-TESTARE
-    Am inclus un fisier de test, example.txt. Acesta acopera cam toate cazurile posibile.
-    Fisierul contine si comentarii.
-    Se poate da copy paste la fisier in aplicatia client si se poate analiza output-ul.
-    Am pus capacitatea 10 pentru fiecare zbor pentru a testa cazurile limita mai usor(cand nu mai sunt locuri).
-    Asteapta 2-3 minute sa se initializeze containerul mysql.
+## Admin service
+This service is meant for administering the flights in the database and has the following API:
+* add flight, that adds a new entry in the Flights table
+* cancel flight, that removes an entry in the Flights table
 
-ALTE OBSERVATII
-    Am creat un makefile care contine operatiile build, run, clean. Se poate sari peste build si executa direct run.
-    Am dezvoltat tema pe Windows asa ca nu am testat funtionalitatea scriptului Makefile, dar ar trebui sa mearga.
+## Client service
+To run use this service use docker attach to the container in order to get to the interactive shell. You can use the command help to see all available commands with parameters and q to exit the terminal.
+
+## MySQL service
+The database has 4 tables:
+* Flights - contains details about flights.
+* Reservations - contains the IDs of the reservation.
+* FlightsToReservations - many-to-many relation between flights and reservations.
+* Tickets - contains bought reservations and card number.
+
+# Testing
+There is a the test file example.txt that covers all possible cases.
